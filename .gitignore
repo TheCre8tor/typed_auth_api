@@ -1,0 +1,6 @@
+node_modules/
+config/default.ts
+config/production.ts
+.idea/
+.cache/
+.env
