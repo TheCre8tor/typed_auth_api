@@ -78,19 +78,32 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
   const msg =
     "If a user with that email is registered you will receive a password reset email";
 
+  // 1. Find User -->
   const user = await findUserByEmail(email);
 
+  // 2. confirm the user exist -->
   if (!user) {
     log.debug(`User with email ${email} does not exists`);
     return res.send(msg);
   }
 
+  // 3. confirm the user is verify -->
   if (!user.verified) {
     return res.send("User is not verified");
   }
 
+  // 4. Generate password reset code -->
   const passwordResetCode = nanoid();
-  user.passwordReset = passwordResetCode;
 
+  // 5. Save password reset code in DB -->
+  user.passwordReset = passwordResetCode;
   await user.save();
+
+  // 6. Send email to user after save -->
+  await sendEmail({
+    to: user.email,
+    from: "test@example.com",
+    subject: "Reset your password",
+    text: `Password reset code: ${passwordResetCode} | Id ${user._id}`,
+  });
 }

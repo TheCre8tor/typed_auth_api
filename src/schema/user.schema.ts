@@ -1,5 +1,6 @@
 import { object, string, TypeOf } from "zod";
 
+// Schema Validation -->
 export const createUserSchema = object({
   body: object({
     firstName: string({
@@ -38,6 +39,7 @@ export const forgotPasswordSchema = object({
   }),
 });
 
+// Input Validation -->
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
 export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>["body"];
