@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import {
   CreateUserInput,
   ForgotPasswordInput,
+  ResetPasswordInput,
   VerifyUserInput,
 } from "../schema/user.schema";
 import {
@@ -75,7 +76,7 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
   const body: ForgotPasswordInput = req.body;
   const { email } = body;
 
-  const msg =
+  const message =
     "If a user with that email is registered you will receive a password reset email";
 
   // 1. Find User -->
@@ -84,7 +85,7 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
   // 2. confirm the user exist -->
   if (!user) {
     log.debug(`User with email ${email} does not exists`);
-    return res.send(msg);
+    return res.send(message);
   }
 
   // 3. confirm the user is verify -->
@@ -96,7 +97,7 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
   const passwordResetCode = nanoid();
 
   // 5. Save password reset code in DB -->
-  user.passwordReset = passwordResetCode;
+  user.passwordResetCode = passwordResetCode;
   await user.save();
 
   // 6. Send email to user after save -->
@@ -106,4 +107,34 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
     subject: "Reset your password",
     text: `Password reset code: ${passwordResetCode} | Id ${user._id}`,
   });
+
+  log.debug(`Password reset email sent to ${email}`);
+
+  return res.send(message);
+}
+
+export async function resetPasswordHandler(
+  req: Request<ResetPasswordInput["params"], {}, ResetPasswordInput["body"]>,
+  res: Response
+) {
+  const { id, passwordResetCode } = req.params;
+  const { password } = req.body;
+
+  const user = await findUserById(id);
+
+  if (
+    !user ||
+    !user.passwordResetCode ||
+    user.passwordResetCode !== passwordResetCode
+  ) {
+    return res.status(400).send("Could not reset user password");
+  }
+
+  user.passwordResetCode = null;
+
+  user.password = password;
+
+  await user.save();
+
+  return res.send("Successfully updated password");
 }

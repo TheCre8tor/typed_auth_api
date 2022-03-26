@@ -11,14 +11,14 @@ import argon2 from "argon2";
 import { nanoid } from "nanoid";
 import log from "../utils/logger";
 
-@pre<User>("save", async function () {
+@pre<User>("save", async function (next) {
   if (!this.isModified("password")) {
-    return;
+    return next();
   }
 
   const hashPassword = await argon2.hash(this.password);
   this.password = hashPassword;
-  return;
+  return next();
 })
 @index({ email: 1 })
 @modelOptions({
@@ -42,7 +42,7 @@ export class User {
   verificationCode: string;
 
   @prop()
-  passwordReset: string | null;
+  passwordResetCode: string | null;
 
   @prop({ default: false })
   verified: boolean;
