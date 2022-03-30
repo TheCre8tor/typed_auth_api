@@ -1,4 +1,5 @@
 import { Router, Response, Request } from "express";
+import deserializeUser from "../middleware/deserializeUser";
 import authRouter from "./auth.routes";
 import userRouter from "./user.routes";
 
@@ -8,7 +9,7 @@ router.get("/healthcheck", (req: Request, res: Response) => {
   res.sendStatus(200);
 });
 
-router.use(userRouter);
-router.use(authRouter);
+router.use("/api/users", userRouter);
+router.use("/api/sessions", authRouter);
 
 export default router;

@@ -1,5 +1,5 @@
 import config from "config";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { CreateSessionInput } from "../schema/auth.schema";
 import { signAccessToken, signRefreshToken } from "../services/auth.service";
 import { findUserByEmail } from "../services/user.service";
@@ -12,7 +12,11 @@ import { findUserByEmail } from "../services/user.service";
    Auth Controller is used for managing all of the authentication code.
     */
 
-export async function createSessionHandler(req: Request, res: Response) {
+export async function createSessionHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { email, password }: CreateSessionInput = req.body;
   const message = "Invalid email or password";
 

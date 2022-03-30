@@ -4,3 +4,7 @@ config/production.ts
 .idea/
 .cache/
 .env
+
+# keys -->
+private.key
+public.pem

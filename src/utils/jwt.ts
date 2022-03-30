@@ -1,6 +1,10 @@
+import fs from "fs";
 import jwt from "jsonwebtoken";
 import config from "config";
 import log from "./logger";
+
+const private_key = fs.readFileSync("private.key", "utf8");
+const public_key = fs.readFileSync("public.pem", "utf8");
 
 // Types -->
 type MapObject = { [K: string]: any };
@@ -18,9 +22,9 @@ export function signJwt(
     "base64"
   ).toString("ascii");
 
-  return jwt.sign(object, signingKey, {
+  return jwt.sign(object, private_key, {
     ...(options && options),
-    algorithm: "HS256",
+    algorithm: "RS256",
   });
 }
 
@@ -33,7 +37,10 @@ export function verifyJwt<T>(
   );
 
   try {
-    const decoded = jwt.verify(token, publicKey) as T;
+    const decoded = jwt.verify(token, public_key, {
+      algorithms: ["RS256"],
+    }) as T;
+
     return decoded;
   } catch (err) {
     log.debug(err);
