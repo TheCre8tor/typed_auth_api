@@ -8,7 +8,7 @@ const routeGuard = async (req: Request, res: Response, next: NextFunction) => {
 
   if (!accessToken) {
     return res.send({
-      message: "Access Token is required to access this resource!",
+      message: "You are not logged in! Please log in to get access!",
     });
   }
 
