@@ -6,6 +6,7 @@ import {
   resetPasswordHandler,
   getCurrentUserHandler,
 } from "../controllers/user.controller";
+import routeGuard from "../middleware/routeGuard";
 import validateResource from "../middleware/validateResource";
 import {
   createUserSchema,
@@ -35,6 +36,9 @@ router.post(
   validateResource(resetPasswordSchema),
   resetPasswordHandler
 );
+
+// Protected Route -->
+router.use(routeGuard);
 
 router.get("/me", getCurrentUserHandler);
 

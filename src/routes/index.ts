@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import deserializeUser from "../middleware/deserializeUser";
+import routeGuard from "../middleware/routeGuard";
 import authRouter from "./auth.routes";
 import userRouter from "./user.routes";
 
