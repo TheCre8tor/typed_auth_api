@@ -5,6 +5,7 @@ import { signJwt } from "../utils/jwt";
 import log from "../utils/logger";
 import config from "config";
 import { omit } from "lodash";
+import { keys } from "../../keys";
 
 type UserId = { [Key: string]: string };
 
@@ -15,7 +16,7 @@ export async function createSession({ userId }: UserId) {
 export function signAccessToken(user: DocumentType<User>) {
   const payload = user.toJSON();
 
-  const accessToken = signJwt(payload, "accessTokenPrivateKey");
+  const accessToken = signJwt(payload, keys.ACCESS_TOKEN_PRIVATE_KEY);
 
   return accessToken;
 }
@@ -25,7 +26,7 @@ export async function signRefreshToken({ userId }: UserId) {
 
   const refreshToken = signJwt(
     { session: session._id },
-    "refreshTokenPrivateKey"
+    keys.REFRESH_TOKEN_PRIVATE_KEY
   );
 
   return refreshToken;
