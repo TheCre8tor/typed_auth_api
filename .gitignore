@@ -6,7 +6,7 @@ config/production.ts
 .env
 
 # keys -->
-keys/acess_token/*.key
-keys/acess_token/*.pem
+keys/access_token/*.key
+keys/access_token/*.pem
 keys/refresh_token/*.key
 keys/refresh_token/*.pem
