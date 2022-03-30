@@ -6,5 +6,4 @@ config/production.ts
 .env
 
 # keys -->
-private.key
-public.pem
+keys/
